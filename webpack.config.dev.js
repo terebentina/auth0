@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const dotenv = require('dotenv');
 const atImport = require('postcss-import');
 const postcssUrl = require('postcss-url');
 const discardComments = require('postcss-discard-comments');
@@ -12,6 +13,16 @@ const reporter = require('postcss-reporter');
 const babelQuery = {
   presets: ['es2015', 'stage-0', 'react', 'react-hmre'],
 };
+
+const envVars = dotenv.config();
+const defines = Object.keys(envVars).reduce(
+  (obj, key) => {
+    // eslint-disable-next-line no-param-reassign
+    obj[key.toUpperCase()] = JSON.stringify(envVars[key]);
+    return obj;
+  },
+  {}
+);
 
 module.exports = {
   context: __dirname,
@@ -66,9 +77,10 @@ module.exports = {
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.NoErrorsPlugin(),
     new webpack.HotModuleReplacementPlugin(),
+    new webpack.DefinePlugin(defines),
     new HtmlWebpackPlugin({
-      title: 'My app',
-      template: 'index.ejs',
+      title: 'Dan Caragea + Auth0 = ❤',
+      template: 'index.html',
     }),
   ],
 };

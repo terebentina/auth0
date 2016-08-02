@@ -4,7 +4,7 @@ const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
 
-if (!process.env.NODE_ENV || process.env.NODE_ENV == 'development') {
+if (process.env.NODE_ENV == 'development') {
   const webpackConfig = require('./webpack.config.dev');
   const compiler = webpack(webpackConfig);
 
