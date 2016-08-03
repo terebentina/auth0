@@ -24,6 +24,13 @@
     "max-len": 0,
     "consistent-return": 0,
     "newline-per-chained-call": 0,
-    "global-require": 0
+    "global-require": 0,
+    "react/jsx-filename-extension": 0
+  },
+  "globals": {
+    "localStorage": true,
+    "document": true,
+    "AUTH0_CLIENT_ID": true,
+    "AUTH0_DOMAIN": true
   }
 }

@@ -1,18 +1,28 @@
 const path = require('path');
 const app = require('express')();
-const webpack = require('webpack');
-const webpackDevMiddleware = require('webpack-dev-middleware');
-const webpackHotMiddleware = require('webpack-hot-middleware');
 
 if (process.env.NODE_ENV == 'development') {
+  // eslint-disable-next-line
+  const webpack = require('webpack');
+  // eslint-disable-next-line
+  const webpackDevMiddleware = require('webpack-dev-middleware');
+  // eslint-disable-next-line
+  const webpackHotMiddleware = require('webpack-hot-middleware');
   const webpackConfig = require('./webpack.config.dev');
+
   const compiler = webpack(webpackConfig);
 
   app.use(webpackDevMiddleware(compiler, {
-    noInfo: true, publicPath: webpackConfig.output.publicPath, stats: { colors: true },
+    noInfo: true,
+    publicPath: webpackConfig.output.publicPath,
+    stats: { colors: true },
   }));
 
-  app.use(webpackHotMiddleware(compiler));
+  app.use(webpackHotMiddleware(compiler, {
+    log: console.log,
+    path: '/__webpack_hmr',
+    heartbeat: 10 * 1000,
+  }));
 
   app.use('*', (req, res, next) => {
     const filename = path.join(compiler.outputPath, 'index.html');
