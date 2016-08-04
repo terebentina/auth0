@@ -2,21 +2,51 @@ import axios from 'axios';
 import _ from 'lodash';
 
 export default {
-  get(url, params) {
-    return axios.get(url, { params }).then((response) => response.data);
+  get(url, params, forceJson = false) {
+    const config = { params };
+    if (forceJson) {
+      config.headers = {
+        Accept: 'application/json',
+      };
+      config.responseType = 'json';
+    }
+    return axios.get(url, config).then((response) => response.data);
   },
 
-  put(url, params) {
-    return axios.put(url, params).then((response) => response.data);
+  put(url, params, forceJson = false) {
+    const config = {};
+    if (forceJson) {
+      config.headers = {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      };
+      config.responseType = 'json';
+    }
+    return axios.put(url, params, config).then((response) => response.data);
   },
 
-  post(url, params) {
-    return axios.post(url, params).then((response) => response.data);
+  post(url, params, forceJson = false) {
+    const config = {};
+    if (forceJson) {
+      config.headers = {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      };
+      config.responseType = 'json';
+    }
+    return axios.post(url, params, config).then((response) => response.data);
   },
 
-  delete(url, params) {
+  delete(url, params, forceJson = false) {
     const finalUrl = buildUrl(url, params);
-    return axios.delete(finalUrl).then((response) => response.data);
+    const config = {};
+    if (forceJson) {
+      config.headers = {
+        Accept: 'application/json',
+      };
+      config.responseType = 'json';
+    }
+    return axios.delete(finalUrl, config).then((response) => response.data);
   },
 
   jsonp(url, params = {}) {
