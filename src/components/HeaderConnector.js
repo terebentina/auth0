@@ -5,9 +5,7 @@ import { login, logout } from '../actions';
 import Header from './Header';
 
 function HeaderConnector(props) {
-  return (
-    <Header {...props} />
-  );
+  return <Header {...props} />;
 }
 
 function mapStateToProps(state) {

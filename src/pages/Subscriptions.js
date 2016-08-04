@@ -1,12 +1,18 @@
-import React from 'react';
-import authenticated from '../decorators/authenticated';
+import React, { PropTypes } from 'react';
+import PageConnector from './PageConnector';
 
-function Subscriptions() {
+function Subscriptions({ subs = [] }) {
   return (
-    <div>
-      <h1>Subscriptions</h1>
-    </div>
+    <PageConnector title="Subscriptions">
+      <ul>
+        {subs.map((sub, i) => <li key={i}>{sub.title}</li>)}
+      </ul>
+    </PageConnector>
   );
 }
 
-export default authenticated(Subscriptions);
+Subscriptions.propTypes = {
+  subs: PropTypes.array,
+};
+
+export default Subscriptions;

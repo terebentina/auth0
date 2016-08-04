@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import Login from '../pages/Login';
 
 function mapStateToProps(state) {
   return {
@@ -17,7 +18,7 @@ function authenticated(WrappedComponent) {
       return <WrappedComponent {...otherProps} />;
     }
 
-    return null;
+    return <Login />;
   }
 
   Authenticated.propTypes = {

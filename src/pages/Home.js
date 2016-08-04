@@ -1,11 +1,11 @@
 import React from 'react';
+import PageConnector from './PageConnector';
 
 function Home() {
   return (
-    <div>
-      <h1>Zendesk + Auth0 + Webtask Fun</h1>
+    <PageConnector title="Zendesk + Auth0 + Webtask Fun">
       <p>Welcome to this beautiful app</p>
-    </div>
+    </PageConnector>
   );
 }
 

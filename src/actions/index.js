@@ -10,6 +10,17 @@ const lock = new Auth0Lock(AUTH0_CLIENT_ID, AUTH0_DOMAIN, {
   },
 });
 
+export function showMessage(text, type = Constants.MESSAGE_SUCCESS) {
+  return {
+    type: Constants.SHOW_MESSAGE,
+    message: { text, type },
+  };
+}
+
+export function hideMessage() {
+  return { type: Constants.HIDE_MESSAGE };
+}
+
 function loginSuccess(profile, token) {
   return {
     type: Constants.LOGIN_SUCCESS,
@@ -41,4 +52,39 @@ export function login() {
 
 export function logout() {
   return { type: Constants.LOGOUT };
+}
+
+function requestSubs() {
+  return { type: Constants.REQUEST_SUBS };
+}
+
+function receiveSubs(subs) {
+  return {
+    type: Constants.RECEIVE_SUBS,
+    subs,
+  };
+}
+
+function fetchSubs() {
+  return (dispatch) => {
+    dispatch(requestSubs());
+    return request.get('http://google.com')
+      .then((json) => dispatch(receiveSubs(json)))
+      .catch((err) => Promise.all([
+        dispatch(receiveSubs([])),
+        dispatch(showMessage(`Server responded: ${err.statusText}`, Constants.MESSAGE_ERROR)),
+      ]));
+  };
+}
+
+function shouldFetchSubs(state) {
+  return !state.isFetching;
+}
+
+export function fetchSubsIfNeeded() {
+  return (dispatch, getState) => {
+    if (shouldFetchSubs(getState())) {
+      return dispatch(fetchSubs());
+    }
+  };
 }
