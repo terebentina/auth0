@@ -5,7 +5,7 @@ import { Router, Route, IndexRoute, browserHistory } from 'react-router';
 import configureStore from './store/configureStore';
 import App from './App';
 import Home from './pages/Home';
-import SubscriptionsConnector from './pages/SubscriptionsConnector';
+import TicketsConnector from './pages/TicketsConnector';
 
 const store = configureStore();
 
@@ -14,7 +14,7 @@ ReactDOM.render((
     <Router history={browserHistory}>
       <Route path="/" component={App}>
         <IndexRoute component={Home} />
-        <Route path="/subscriptions" component={SubscriptionsConnector} />
+        <Route path="/tickets" component={TicketsConnector} />
       </Route>
     </Router>
   </Provider>

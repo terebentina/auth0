@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux';
+import { isTokenExpired } from '../utils/jwtHelper';
 import * as Constants from '../constants';
 
 /**
@@ -7,32 +8,46 @@ import * as Constants from '../constants';
  *   isLoggedIn: true|false,
  *   profile: {...},
  *   message: { type: 'foo', text: 'bar' }
- *   subscriptions: []
+ *   tickets: [],
+ *   domain: ''
  * }
  */
 
 function isFetching(state = false, action) {
   switch (action.type) {
-    case Constants.REQUEST_SUBSCRIPTIONS:
+    case Constants.REQUEST_TICKETS:
       return true;
-    case Constants.RECEIVE_SUBSCRIPTIONS:
+    case Constants.RECEIVE_TICKETS:
       return false;
     default:
       return state;
   }
 }
 
+/**
+ * Boolean value for showing user login status
+ */
 function isLoggedIn(state = false, action) {
-  switch (action.type) {
-    case Constants.LOGIN_SUCCESS:
-      return true;
-    case Constants.LOGOUT:
+  const token = localStorage.getItem('idToken');
+  if (action.type == Constants.LOGIN_SUCCESS) {
+    return true;
+  } else if (action.type == Constants.LOGOUT) {
+    return false;
+  } else if (token) {
+    if (isTokenExpired(token)) {
+      localStorage.removeItem('idToken');
+      localStorage.removeItem('profile');
       return false;
-    default:
-      return state;
+    }
+    return true;
   }
+
+  return state;
 }
 
+/**
+ * User profile. Saved in both localStorage for in-between browser restarts and redux for easy access
+ */
 function profile(state = {}, action) {
   switch (action.type) {
     case Constants.LOGIN_SUCCESS:
@@ -51,16 +66,35 @@ function profile(state = {}, action) {
   }
 }
 
-function subscriptions(state = [], action) {
+/**
+ * The list of messages retrieved after a search
+ */
+function tickets(state = [], action) {
   switch (action.type) {
-    case Constants.RECEIVE_SUBSCRIPTIONS:
-      return action.subscriptions;
+    case Constants.RECEIVE_TICKETS:
+      return action.tickets;
 
     default:
       return state;
   }
 }
 
+/**
+ * This holds the last searched domain. Useful for re-searches and for other ticket-related messages
+ */
+function domain(state = '', action) {
+  switch (action.type) {
+    case Constants.RECEIVE_TICKETS:
+      return action.domain;
+
+    default:
+      return state;
+  }
+}
+
+/**
+ * Global error or success messages that needs to be show to user as a result of some action
+ */
 function message(state = null, action) {
   if (action.type === Constants.SHOW_MESSAGE) {
     return action.message;
@@ -76,7 +110,8 @@ const rootReducer = combineReducers({
   isLoggedIn,
   profile,
   message,
-  subscriptions,
+  tickets,
+  domain,
 });
 
 export default rootReducer;

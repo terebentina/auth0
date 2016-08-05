@@ -28,14 +28,6 @@ if (process.env.NODE_ENV == 'development') {
     heartbeat: 10 * 1000,
   }));
 
-  app.get('/xxx', (req, res) => {
-    zd.searchTickets('*@gmail.com').then((results) => {
-      console.log('results', results);
-      res.json(results);
-      res.end();
-    });
-  });
-
   app.use('*', (req, res, next) => {
     const filename = path.join(compiler.outputPath, 'index.html');
     compiler.outputFileSystem.readFile(filename, (err, result) => {

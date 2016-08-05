@@ -10,6 +10,8 @@ const lock = new Auth0Lock(process.env.AUTH0_CLIENT_ID, process.env.AUTH0_DOMAIN
   },
 });
 
+const webtaskUrl = 'https://webtask.it.auth0.com/api/run/wt-dancaragea-gmail_com-1/webtask';
+
 export function showMessage(text, type = Constants.MESSAGE_SUCCESS) {
   return {
     type: Constants.SHOW_MESSAGE,
@@ -54,37 +56,38 @@ export function logout() {
   return { type: Constants.LOGOUT };
 }
 
-function requestSubs() {
-  return { type: Constants.REQUEST_SUBSCRIPTIONS };
+function requestTickets() {
+  return { type: Constants.REQUEST_TICKETS };
 }
 
-function receiveSubs(subs) {
+function receiveTickets(domain, tickets) {
   return {
-    type: Constants.RECEIVE_SUBSCRIPTIONS,
-    subs,
+    type: Constants.RECEIVE_TICKETS,
+    domain,
+    tickets,
   };
 }
 
-function fetchSubs() {
+export function fetchTickets(domain) {
   return (dispatch) => {
-    dispatch(requestSubs());
-    return request.get('http://google.com')
-      .then((json) => dispatch(receiveSubs(json)))
+    dispatch(requestTickets());
+    return request.get(`${webtaskUrl}?domain=${domain}`)
+      .then((json) => dispatch(receiveTickets(domain, json)))
       .catch((err) => Promise.all([
-        dispatch(receiveSubs([])),
+        dispatch(receiveTickets([])),
         dispatch(showMessage(`Server responded: ${err.statusText}`, Constants.MESSAGE_ERROR)),
       ]));
   };
 }
 
-function shouldFetchSubs(state) {
-  return !state.isFetching;
+function shouldFetchTickets(state) {
+  return !state.isFetching && state.domain;
 }
 
-export function fetchSubsIfNeeded() {
+export function fetchTicketsIfNeeded() {
   return (dispatch, getState) => {
-    if (shouldFetchSubs(getState())) {
-      return dispatch(fetchSubs());
+    if (shouldFetchTickets(getState())) {
+      return dispatch(fetchTickets());
     }
   };
 }
