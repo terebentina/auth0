@@ -1,7 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const dotenv = require('dotenv');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const atImport = require('postcss-import');
 const postcssUrl = require('postcss-url');
@@ -16,14 +15,15 @@ const babelQuery = {
   presets: ['es2015', 'stage-0', 'react'],
 };
 
-const envVars = dotenv.config();
-const defines = Object.keys(envVars).reduce(
+const env = ['NODE_ENV', 'AUTH0_DOMAIN', 'AUTH0_CLIENT_ID', 'AUTH0_CLIENT_SECRET', 'ZENDESK_USERNAME', 'ZENDESK_TOKEN'];
+
+const defines = env.reduce(
   (obj, key) => {
     // eslint-disable-next-line no-param-reassign
-    obj[`process.env.${key.toUpperCase()}`] = JSON.stringify(envVars[key]);
+    obj[`process.env.${key}`] = JSON.stringify(process.env[key]);
     return obj;
   },
-  { 'process.env.NODE_ENV': JSON.stringify('production') }
+  {}
 );
 
 module.exports = {
