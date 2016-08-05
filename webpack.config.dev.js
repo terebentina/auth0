@@ -30,7 +30,7 @@ module.exports = {
   output: {
     path: path.join(__dirname, 'build'),
     filename: '[name].js',
-    publicPath: '/build',
+    publicPath: '/',
     pathinfo: true,
     sourceMapFilename: '[name].map',
   },
@@ -81,7 +81,6 @@ module.exports = {
     new HtmlWebpackPlugin({
       title: 'Dan Caragea + Auth0 = ❤',
       template: 'src/index.html',
-      filename: '../index.html',
     }),
   ],
 };

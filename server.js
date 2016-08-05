@@ -1,5 +1,6 @@
 const path = require('path');
-const app = require('express')();
+const express = require('express');
+const app = express();
 
 if (process.env.NODE_ENV == 'development') {
   // eslint-disable-next-line
@@ -35,6 +36,10 @@ if (process.env.NODE_ENV == 'development') {
       res.end();
     });
   });
+}
+
+if (process.env.NODE_ENV == 'production') {
+  app.use(express.static('build'));
 }
 
 app.listen(process.env.PORT || 3000, process.env.HOSTNAME || '0.0.0.0', () => {

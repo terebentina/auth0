@@ -26,15 +26,13 @@ const defines = Object.keys(envVars).reduce(
   { 'process.env.NODE_ENV': JSON.stringify('production') }
 );
 
-console.log('defines', defines);
-
 module.exports = {
   context: __dirname,
   entry: path.resolve('./src/index.js'),
   output: {
     path: path.join(__dirname, 'build'),
     filename: '[name].js',
-    publicPath: '/build',
+    publicPath: '/',
     pathinfo: true,
     sourceMapFilename: '[name].map',
   },
@@ -91,7 +89,6 @@ module.exports = {
     new HtmlWebpackPlugin({
       title: 'Dan Caragea + Auth0 = ❤',
       template: 'src/index.html',
-      filename: '../index.html',
     }),
   ],
 };
