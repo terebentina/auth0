@@ -7,14 +7,15 @@ import * as Constants from '../constants';
  *   isLoggedIn: true|false,
  *   profile: {...},
  *   message: { type: 'foo', text: 'bar' }
+ *   subscriptions: []
  * }
  */
 
 function isFetching(state = false, action) {
   switch (action.type) {
-    case Constants.REQUEST_SUBS:
+    case Constants.REQUEST_SUBSCRIPTIONS:
       return true;
-    case Constants.RECEIVE_SUBS:
+    case Constants.RECEIVE_SUBSCRIPTIONS:
       return false;
     default:
       return state;
@@ -50,6 +51,16 @@ function profile(state = {}, action) {
   }
 }
 
+function subscriptions(state = [], action) {
+  switch (action.type) {
+    case Constants.RECEIVE_SUBSCRIPTIONS:
+      return action.subscriptions;
+
+    default:
+      return state;
+  }
+}
+
 function message(state = null, action) {
   if (action.type === Constants.SHOW_MESSAGE) {
     return action.message;
@@ -65,6 +76,7 @@ const rootReducer = combineReducers({
   isLoggedIn,
   profile,
   message,
+  subscriptions,
 });
 
 export default rootReducer;

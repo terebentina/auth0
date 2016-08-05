@@ -2,7 +2,7 @@ import Auth0Lock from 'auth0-lock';
 import request from '../utils/request';
 import * as Constants from '../constants';
 
-const lock = new Auth0Lock(AUTH0_CLIENT_ID, AUTH0_DOMAIN, {
+const lock = new Auth0Lock(process.env.AUTH0_CLIENT_ID, process.env.AUTH0_DOMAIN, {
   autoclose: true,
   rememberLastLogin: false,
   auth: {
@@ -55,12 +55,12 @@ export function logout() {
 }
 
 function requestSubs() {
-  return { type: Constants.REQUEST_SUBS };
+  return { type: Constants.REQUEST_SUBSCRIPTIONS };
 }
 
 function receiveSubs(subs) {
   return {
-    type: Constants.RECEIVE_SUBS,
+    type: Constants.RECEIVE_SUBSCRIPTIONS,
     subs,
   };
 }
