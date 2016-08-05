@@ -30,8 +30,6 @@
   "globals": {
     "localStorage": true,
     "document": true,
-    "window": true,
-    "AUTH0_CLIENT_ID": true,
-    "AUTH0_DOMAIN": true
+    "window": true
   }
 }

@@ -2,16 +2,18 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const dotenv = require('dotenv');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const atImport = require('postcss-import');
 const postcssUrl = require('postcss-url');
 const discardComments = require('postcss-discard-comments');
 const advancedVariables = require('postcss-advanced-variables');
 const flexbugsFixes = require('postcss-flexbugs-fixes');
 const nested = require('postcss-nested');
+const autoprefixer = require('autoprefixer');
 const reporter = require('postcss-reporter');
 
 const babelQuery = {
-  presets: ['es2015', 'stage-0', 'react', 'react-hmre'],
+  presets: ['es2015', 'stage-0', 'react'],
 };
 
 const envVars = dotenv.config();
@@ -21,12 +23,14 @@ const defines = Object.keys(envVars).reduce(
     obj[`process.env.${key.toUpperCase()}`] = JSON.stringify(envVars[key]);
     return obj;
   },
-  { 'process.env.NODE_ENV': JSON.stringify('development') }
+  { 'process.env.NODE_ENV': JSON.stringify('production') }
 );
+
+console.log('defines', defines);
 
 module.exports = {
   context: __dirname,
-  entry: [path.resolve('./src/index.js'), 'webpack-hot-middleware/client'],
+  entry: path.resolve('./src/index.js'),
   output: {
     path: path.join(__dirname, 'build'),
     filename: '[name].js',
@@ -35,11 +39,13 @@ module.exports = {
     sourceMapFilename: '[name].map',
   },
   target: 'web',
-  devtool: 'cheap-module-eval-source-map',
+  devtool: false,
+  debug: false,
+  cache: false,
   module: {
     loaders: [
       { test: /\.js$/, loader: 'babel', exclude: [/node_modules/, path.resolve(__dirname, './build')], query: babelQuery },
-      { test: /\.css$/, loader: 'style!css?sourceMap&modules&importLoaders=1&localIdentName=[local]-[hash:base64:5]!postcss' },
+      { test: /\.css$/, loader: ExtractTextPlugin.extract('style', 'css?modules&importLoaders=1&localIdentName=[local]-[hash:base64:5]!postcss') },
     ],
   },
   postcss: [
@@ -68,6 +74,8 @@ module.exports = {
     // https://github.com/postcss/postcss-nested
     nested,
 
+    autoprefixer({ browsers: ['last 2 versions'] }),
+
     // Log PostCSS messages to the console
     reporter({
       clearMessages: true,
@@ -76,8 +84,10 @@ module.exports = {
   plugins: [
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.NoErrorsPlugin(),
-    new webpack.HotModuleReplacementPlugin(),
     new webpack.DefinePlugin(defines),
+    new ExtractTextPlugin('[name].css'),
+    new webpack.optimize.DedupePlugin(),
+    new webpack.optimize.UglifyJsPlugin({ compressor: { warnings: false } }),
     new HtmlWebpackPlugin({
       title: 'Dan Caragea + Auth0 = ❤',
       template: 'src/index.html',
