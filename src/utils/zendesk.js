@@ -7,10 +7,17 @@ const client = zd.createClient({
   disableGlobalState: true,
 });
 
+const domainRE = /^[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/;
+
 module.exports = {
-  searchTickets(str) {
+  searchTickets(domain) {
     return new Promise((resolve, reject) => {
-      const query = `status<solved+type:ticket+requester:${str}`;
+      // @todo this is just some quick&dirty validation. We should do better in a real app
+      if (!domainRE.test(domain)) {
+        reject('Invalid domain entered');
+      }
+
+      const query = `type:ticket requester:*@${domain}`;
 
       client.search.query(query, (err, req, result) => {
         if (err) {

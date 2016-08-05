@@ -1,5 +1,8 @@
+require('dotenv').config({ silent: true });
 const path = require('path');
 const express = require('express');
+const zd = require('./src/utils/zendesk');
+
 const app = express();
 
 if (process.env.NODE_ENV == 'development') {
@@ -24,6 +27,14 @@ if (process.env.NODE_ENV == 'development') {
     path: '/__webpack_hmr',
     heartbeat: 10 * 1000,
   }));
+
+  app.get('/xxx', (req, res) => {
+    zd.searchTickets('*@gmail.com').then((results) => {
+      console.log('results', results);
+      res.json(results);
+      res.end();
+    });
+  });
 
   app.use('*', (req, res, next) => {
     const filename = path.join(compiler.outputPath, 'index.html');

@@ -15,7 +15,7 @@ const babelQuery = {
   presets: ['es2015', 'stage-0', 'react'],
 };
 
-const env = ['NODE_ENV', 'AUTH0_DOMAIN', 'AUTH0_CLIENT_ID', 'AUTH0_CLIENT_SECRET', 'ZENDESK_USERNAME', 'ZENDESK_TOKEN'];
+const env = ['NODE_ENV', 'AUTH0_DOMAIN', 'AUTH0_CLIENT_ID'];
 
 const defines = env.reduce(
   (obj, key) => {

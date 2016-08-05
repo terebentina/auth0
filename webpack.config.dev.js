@@ -21,7 +21,7 @@ const defines = Object.keys(envVars).reduce(
     obj[`process.env.${key.toUpperCase()}`] = JSON.stringify(envVars[key]);
     return obj;
   },
-  { 'process.env.NODE_ENV': JSON.stringify('development') }
+  {}
 );
 
 module.exports = {
