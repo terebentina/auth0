@@ -32,7 +32,6 @@ app.get('/', (req, res) => {
 });
 
 module.exports = wt.fromExpress(app).auth0({
-  exclude: ['/'],
   loginError(error, ctx, req, res, baseUrl) {
     res.writeHead(401, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ statusCode: 401, message: 'unauthorized' }));
