@@ -71,11 +71,11 @@ function receiveTickets(domain, tickets) {
 export function fetchTickets(domain) {
   return (dispatch) => {
     dispatch(requestTickets());
-    return request.get(`${webtaskUrl}?domain=${domain}`)
+    return request.get(webtaskUrl, { domain }, { headers: { Authorization: `Bearer ${localStorage.getItem('idToken')}` } })
       .then((json) => dispatch(receiveTickets(domain, json)))
       .catch((err) => Promise.all([
-        dispatch(receiveTickets([])),
-        dispatch(showMessage(`Server responded: ${err.statusText}`, Constants.MESSAGE_ERROR)),
+        dispatch(receiveTickets(domain, [])),
+        dispatch(showMessage(`Server responded: ${err.statusText || err}`, Constants.MESSAGE_ERROR)),
       ]));
   };
 }
