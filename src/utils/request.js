@@ -28,6 +28,10 @@ export default {
     return axios.put(url, params, config).then((response) => response.data);
   },
 
+  patch(url, params, config = {}) {
+    return axios.patch(url, params, config).then((response) => response.data);
+  },
+
   post(url, params, forceJson = false) {
     const config = {};
     if (forceJson) {
