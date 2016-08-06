@@ -84,7 +84,7 @@ function tickets(state = [], action) {
  */
 function domain(state = '', action) {
   switch (action.type) {
-    case Constants.RECEIVE_TICKETS:
+    case Constants.SET_DOMAIN:
       return action.domain;
 
     default:

@@ -11,7 +11,7 @@ class TicketsConnector extends Component {
     fetchTickets: PropTypes.func,
   };
 
-  componentWillMount() {
+  componentDidMount() {
     this.props.fetchTicketsIfNeeded();
   }
 

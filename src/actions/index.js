@@ -62,10 +62,16 @@ function requestTickets() {
   return { type: Constants.REQUEST_TICKETS };
 }
 
-function receiveTickets(domain, tickets) {
+function saveDomain(domain) {
+  return {
+    type: Constants.SET_DOMAIN,
+    domain,
+  };
+}
+
+function receiveTickets(tickets) {
   return {
     type: Constants.RECEIVE_TICKETS,
-    domain,
     tickets,
   };
 }
@@ -93,10 +99,11 @@ export function fetchTickets(domain) {
     return request.get(webtaskUrl, { domain }, { headers: { Authorization: `Bearer ${localStorage.getItem('idToken')}` } })
       .then((json) => Promise.all([
         dispatch(saveSearch(domain, json)),
-        dispatch(receiveTickets(domain, json)),
+        dispatch(saveDomain(domain)),
+        dispatch(receiveTickets(json)),
       ]))
       .catch((err) => Promise.all([
-        dispatch(receiveTickets(domain, [])),
+        dispatch(receiveTickets([])),
         dispatch(showMessage(`Server responded: ${err.statusText || err}`, Constants.MESSAGE_ERROR)),
       ]));
   };
@@ -108,8 +115,9 @@ function shouldFetchTickets(state) {
 
 export function fetchTicketsIfNeeded() {
   return (dispatch, getState) => {
-    if (shouldFetchTickets(getState())) {
-      return dispatch(fetchTickets());
+    const state = getState();
+    if (shouldFetchTickets(state)) {
+      return dispatch(fetchTickets(state.domain));
     }
   };
 }
@@ -120,12 +128,28 @@ function canAutoLogin() {
   return token && !isTokenExpired(token) && profile;
 }
 
-export function autoLoginIfPossible() {
+function autoLoginIfPossible() {
   return (dispatch) => {
     if (canAutoLogin()) {
       const token = localStorage.getItem('idToken');
       const profile = JSON.parse(localStorage.getItem('profile'));
       return dispatch(loginSuccess(profile, token));
     }
+  };
+}
+
+function populateDomainFromAuth0Metadata() {
+  return (dispatch, getState) => {
+    const state = getState();
+    if (state.isLoggedIn && state.profile.user_metadata.lastSearchedDomain) {
+      dispatch(saveDomain(state.profile.user_metadata.lastSearchedDomain));
+    }
+  };
+}
+
+export function prePopulateStore() {
+  return (dispatch) => {
+    dispatch(autoLoginIfPossible());
+    dispatch(populateDomainFromAuth0Metadata());
   };
 }

@@ -2,14 +2,14 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import classNames from 'classnames';
-import { autoLoginIfPossible } from './actions';
+import { prePopulateStore } from './actions';
 import HeaderConnector from './components/HeaderConnector';
 import styles from './App.css';
 
 class App extends Component {
 
   componentWillMount() {
-    this.props.autoLoginIfPossible();
+    this.props.prePopulateStore();
   }
 
   render() {
@@ -26,11 +26,11 @@ class App extends Component {
 
 App.propTypes = {
   children: PropTypes.any,
-  autoLoginIfPossible: PropTypes.func,
+  prePopulateStore: PropTypes.func,
 };
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ autoLoginIfPossible }, dispatch);
+  return bindActionCreators({ prePopulateStore }, dispatch);
 }
 
 export default connect(null, mapDispatchToProps)(App);
