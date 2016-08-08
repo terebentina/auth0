@@ -154,7 +154,8 @@ function autoLoginIfPossible() {
 function populateDomainFromAuth0Metadata() {
   return (dispatch, getState) => {
     const state = getState();
-    if (state.isLoggedIn && state.profile.user_metadata.lastSearchedDomains && state.profile.user_metadata.lastSearchedDomains.length) {
+    const lastDomain = _.get(state, 'profile.user_metadata.lastSearchedDomains[0]', null);
+    if (state.isLoggedIn && lastDomain) {
       dispatch(saveDomain(state.profile.user_metadata.lastSearchedDomains[0]));
     }
   };
