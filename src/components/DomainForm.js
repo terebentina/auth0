@@ -15,7 +15,7 @@ class DomainForm extends PureComponent {
 
   componentWillReceiveProps(nextProps) {
     if (this.props.domain != nextProps.domain) {
-      this.setState({ domain: nextProps.domain});
+      this.setState({ domain: nextProps.domain });
     }
   }
 

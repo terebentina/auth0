@@ -1,4 +1,5 @@
 import Auth0Lock from 'auth0-lock';
+import _ from 'lodash';
 import request from '../utils/request';
 import { isTokenExpired } from '../utils/jwtHelper';
 import * as Constants from '../constants';
@@ -30,6 +31,13 @@ function loginSuccess(profile, token) {
     type: Constants.LOGIN_SUCCESS,
     profile,
     token,
+  };
+}
+
+function updateProfile(profile) {
+  return {
+    type: Constants.PROFILE_UPDATE,
+    profile,
   };
 }
 
@@ -83,7 +91,7 @@ function saveSearch(domain) {
   return (dispatch, getState) => {
     const state = getState();
     const idToken = localStorage.getItem('idToken');
-    let lastSearchedDomains = state.profile.user_metadata.lastSearchedDomains || [];
+    let lastSearchedDomains = _.get(state, 'profile.user_metadata.lastSearchedDomains', []);
     lastSearchedDomains = lastSearchedDomains.filter((val) => val != domain);
     lastSearchedDomains.unshift(domain);
     lastSearchedDomains = lastSearchedDomains.slice(0, 4);
@@ -93,7 +101,7 @@ function saveSearch(domain) {
       { user_metadata: { lastSearchedDomains } },
       { headers: { Authorization: `Bearer ${idToken}` } }
     ).then((profile) => {
-      dispatch(loginSuccess(profile, idToken));
+      dispatch(updateProfile(profile));
     });
   };
 }

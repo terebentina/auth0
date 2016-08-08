@@ -55,6 +55,10 @@ function profile(state = {}, action) {
       localStorage.setItem('profile', JSON.stringify(action.profile));
       return action.profile;
 
+    case Constants.PROFILE_UPDATE:
+      localStorage.setItem('profile', JSON.stringify(action.profile));
+      return action.profile;
+
     case Constants.LOGIN_ERROR:
     case Constants.LOGOUT:
       localStorage.removeItem('idToken');
