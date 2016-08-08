@@ -4,14 +4,6 @@ import request from '../utils/request';
 import { isTokenExpired } from '../utils/jwtHelper';
 import * as Constants from '../constants';
 
-const lock = new Auth0Lock(process.env.AUTH0_CLIENT_ID, process.env.AUTH0_DOMAIN, {
-  autoclose: true,
-  rememberLastLogin: false,
-  auth: {
-    redirect: false,
-  },
-});
-
 const webtaskUrl = 'https://webtask.it.auth0.com/api/run/wt-dancaragea-gmail_com-1/webtask';
 const auth0UserUrl = 'https://terebentina.eu.auth0.com/api/v2/users';
 
@@ -50,6 +42,13 @@ function loginError(error) {
 
 export function login() {
   return (dispatch) => {
+    const lock = new Auth0Lock(process.env.AUTH0_CLIENT_ID, process.env.AUTH0_DOMAIN, {
+      autoclose: true,
+      rememberLastLogin: false,
+      auth: {
+        redirect: false,
+      },
+    });
     lock.show();
     lock.once('authenticated', (authResult) => {
       lock.getProfile(authResult.idToken, (error, profile) => {

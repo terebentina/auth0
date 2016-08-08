@@ -1,7 +1,6 @@
 require('dotenv').config({ silent: true });
 const path = require('path');
 const express = require('express');
-const zd = require('./src/utils/zendesk');
 
 const app = express();
 
@@ -12,13 +11,23 @@ if (process.env.NODE_ENV == 'development') {
   const webpackDevMiddleware = require('webpack-dev-middleware');
   // eslint-disable-next-line
   const webpackHotMiddleware = require('webpack-hot-middleware');
-  const webpackConfig = require('./webpack.config.dev');
+  const devConfig = require('./webpack.config.dev');
+  const testConfig = require('./webpack.config.test');
 
-  const compiler = webpack(webpackConfig);
+  const testsCompiler = webpack(testConfig);
+
+  testsCompiler.watch({}, (err) => {
+    if (err) {
+      return console.log(err);
+    }
+    console.log('Test file bundled');
+  });
+
+  const compiler = webpack(devConfig);
 
   app.use(webpackDevMiddleware(compiler, {
     noInfo: true,
-    publicPath: webpackConfig.output.publicPath,
+    publicPath: devConfig.output.publicPath,
     stats: { colors: true },
   }));
 

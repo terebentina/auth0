@@ -19,13 +19,17 @@ class Message extends PureComponent {
   }
 
   render() {
-    const { type = 'success', text = '' } = this.props;
+    const { type, text } = this.props;
 
-    return (
-      <div className={`alert ${types[type]}`}>
-        {text}
-      </div>
-    );
+    if (text) {
+      return (
+        <div className={`alert ${types[type] || ''}`}>
+          {text}
+        </div>
+      );
+    }
+
+    return null;
   }
 }
 
@@ -33,6 +37,10 @@ Message.propTypes = {
   type: PropTypes.string,
   text: PropTypes.string,
   onHide: PropTypes.func.isRequired,
+};
+
+Message.defaultProps = {
+  type: 'success',
 };
 
 export default Message;
