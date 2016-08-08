@@ -1,9 +1,8 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import classNames from 'classnames';
-import shouldPureComponentUpdate from 'react-pure-render/function';
 import { domainRE } from '../utils/validator';
 
-class DomainForm extends Component {
+class DomainForm extends PureComponent {
   static propTypes = {
     domain: PropTypes.string,
     fetchTickets: PropTypes.func.isRequired,
@@ -13,8 +12,6 @@ class DomainForm extends Component {
     domain: this.props.domain || '',
     hasError: false,
   };
-
-  shouldComponentUpdate = shouldPureComponentUpdate;
 
   onDomainChange = (e) => {
     this.setState({ domain: e.target.value });

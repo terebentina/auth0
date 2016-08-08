@@ -1,15 +1,12 @@
-import React, { Component, PropTypes } from 'react';
-import shouldPureComponentUpdate from 'react-pure-render/function';
+import React, { PureComponent, PropTypes } from 'react';
 import classNames from 'classnames';
 import styles from './Header.css';
 
-class Header extends Component {
+class Header extends PureComponent {
   static propTypes = {
     isLoggedIn: PropTypes.bool.isRequired,
     actions: PropTypes.object.isRequired,
   };
-
-  shouldComponentUpdate = shouldPureComponentUpdate;
 
   onLoginClick = (e) => {
     e.preventDefault();

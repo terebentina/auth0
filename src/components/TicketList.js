@@ -1,13 +1,10 @@
-import React, { Component, PropTypes } from 'react';
-import shouldPureComponentUpdate from 'react-pure-render/function';
+import React, { PureComponent, PropTypes } from 'react';
 
-class TicketList extends Component {
+class TicketList extends PureComponent {
   static propTypes = {
     tickets: PropTypes.array,
     domain: PropTypes.string,
   };
-
-  shouldComponentUpdate = shouldPureComponentUpdate;
 
   render() {
     const { tickets, domain } = this.props;

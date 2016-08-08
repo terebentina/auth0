@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 
 const types = {
   error: 'alert-danger',
@@ -8,7 +8,7 @@ const types = {
 const duration = 4000;
 let timeoutID;
 
-class Message extends Component {
+class Message extends PureComponent {
 
   componentDidMount() {
     timeoutID = setTimeout(this.props.onHide, duration);
