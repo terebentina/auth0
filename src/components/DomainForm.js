@@ -13,6 +13,12 @@ class DomainForm extends PureComponent {
     hasError: false,
   };
 
+  componentWillReceiveProps(nextProps) {
+    if (this.props.domain != nextProps.domain) {
+      this.setState({ domain: nextProps.domain});
+    }
+  }
+
   onDomainChange = (e) => {
     this.setState({ domain: e.target.value });
   };

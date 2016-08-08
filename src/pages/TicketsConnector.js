@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import _ from 'lodash';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { fetchTicketsIfNeeded, fetchTickets } from '../actions';
@@ -26,6 +27,7 @@ function mapStateToProps(state) {
   return {
     tickets: state.tickets,
     domain: state.domain,
+    lastSearchedDomains: _.get(state, 'profile.user_metadata.lastSearchedDomains', []),
   };
 }
 

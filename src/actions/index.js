@@ -79,13 +79,18 @@ function receiveTickets(tickets) {
 /**
  * Save this domain to user's metadata on Auth0
  */
-function saveSearch(domain, tickets) {
+function saveSearch(domain) {
   return (dispatch, getState) => {
     const state = getState();
     const idToken = localStorage.getItem('idToken');
+    let lastSearchedDomains = state.profile.user_metadata.lastSearchedDomains || [];
+    lastSearchedDomains = lastSearchedDomains.filter((val) => val != domain);
+    lastSearchedDomains.unshift(domain);
+    lastSearchedDomains = lastSearchedDomains.slice(0, 4);
+
     return request.patch(
       `${auth0UserUrl}/${state.profile.user_id}`,
-      { user_metadata: { lastSearchedDomain: domain, ticketCount: tickets.length } },
+      { user_metadata: { lastSearchedDomains } },
       { headers: { Authorization: `Bearer ${idToken}` } }
     ).then((profile) => {
       dispatch(loginSuccess(profile, idToken));
@@ -98,7 +103,7 @@ export function fetchTickets(domain) {
     dispatch(requestTickets());
     return request.get(webtaskUrl, { domain }, { headers: { Authorization: `Bearer ${localStorage.getItem('idToken')}` } })
       .then((json) => Promise.all([
-        dispatch(saveSearch(domain, json)),
+        dispatch(saveSearch(domain)),
         dispatch(saveDomain(domain)),
         dispatch(receiveTickets(json)),
       ]))
@@ -141,8 +146,8 @@ function autoLoginIfPossible() {
 function populateDomainFromAuth0Metadata() {
   return (dispatch, getState) => {
     const state = getState();
-    if (state.isLoggedIn && state.profile.user_metadata.lastSearchedDomain) {
-      dispatch(saveDomain(state.profile.user_metadata.lastSearchedDomain));
+    if (state.isLoggedIn && state.profile.user_metadata.lastSearchedDomains && state.profile.user_metadata.lastSearchedDomains.length) {
+      dispatch(saveDomain(state.profile.user_metadata.lastSearchedDomains[0]));
     }
   };
 }
