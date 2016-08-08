@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import classNames from 'classnames';
 import { prePopulateStore } from './actions';
 import HeaderConnector from './components/HeaderConnector';
+import LoadingIndicator from './components/LoadingIndicator';
 import styles from './App.css';
 
 class App extends Component {
@@ -14,11 +15,12 @@ class App extends Component {
 
   render() {
     return (
-      <div>
+      <div className={styles.app}>
         <HeaderConnector />
         <div className={classNames('container', styles.container)}>
           { this.props.children }
         </div>
+        <LoadingIndicator className={styles.loading} show={this.props.isFetching} />
       </div>
     );
   }
@@ -26,11 +28,16 @@ class App extends Component {
 
 App.propTypes = {
   children: PropTypes.any,
+  isFetching: PropTypes.bool,
   prePopulateStore: PropTypes.func,
 };
+
+function mapStateToProps(state) {
+  return { isFetching: state.isFetching };
+}
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({ prePopulateStore }, dispatch);
 }
 
-export default connect(null, mapDispatchToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);
