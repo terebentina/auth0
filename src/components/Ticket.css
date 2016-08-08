@@ -1,0 +1,19 @@
+.ticketRow {
+  transition: all 1s;
+}
+
+.subject {
+  cursor: pointer;
+}
+
+.description {
+  transition: max-height .5s, opacity .1s ease-out;
+  opacity: 0;
+  overflow: hidden;
+  max-height: 0;
+
+  .open & {
+    opacity: 1;
+    max-height: 300px;
+  }
+}
