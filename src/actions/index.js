@@ -86,18 +86,14 @@ function receiveTickets(tickets) {
 /**
  * Save this domain to user's metadata on Auth0
  */
-function saveSearch(domain) {
+function saveSearch(domain, tickets) {
   return (dispatch, getState) => {
     const state = getState();
     const idToken = localStorage.getItem('idToken');
-    let lastSearchedDomains = _.get(state, 'profile.user_metadata.lastSearchedDomains', []);
-    lastSearchedDomains = lastSearchedDomains.filter((val) => val != domain);
-    lastSearchedDomains.unshift(domain);
-    lastSearchedDomains = lastSearchedDomains.slice(0, 4);
 
     return request.patch(
       `${auth0UserUrl}/${state.profile.user_id}`,
-      { user_metadata: { lastSearchedDomains } },
+      { user_metadata: { domain, tickets } },
       { headers: { Authorization: `Bearer ${idToken}` } }
     ).then((profile) => {
       dispatch(updateProfile(profile));
@@ -110,12 +106,11 @@ export function fetchTickets(domain) {
     dispatch(requestTickets());
     return request.get(webtaskUrl, { domain }, { headers: { Authorization: `Bearer ${localStorage.getItem('idToken')}` } })
       .then((json) => Promise.all([
-        dispatch(saveSearch(domain)),
+        dispatch(saveSearch(domain, json)),
         dispatch(saveDomain(domain)),
         dispatch(receiveTickets(json)),
       ]))
       .catch((err) => Promise.all([
-        dispatch(receiveTickets([])),
         dispatch(showMessage(`Server responded: ${err.statusText || err}`, Constants.MESSAGE_ERROR)),
       ]));
   };
@@ -150,12 +145,18 @@ function autoLoginIfPossible() {
   };
 }
 
-function populateDomainFromAuth0Metadata() {
+function populateFromAuth0Metadata() {
   return (dispatch, getState) => {
     const state = getState();
-    const lastDomain = _.get(state, 'profile.user_metadata.lastSearchedDomains[0]', null);
-    if (state.isLoggedIn && lastDomain) {
-      dispatch(saveDomain(state.profile.user_metadata.lastSearchedDomains[0]));
+    if (state.isLoggedIn) {
+      const domain = _.get(state, 'profile.user_metadata.domain', '');
+      const tickets = _.get(state, 'profile.user_metadata.tickets', []);
+      if (domain) {
+        dispatch(saveDomain(domain));
+      }
+      if (tickets.length) {
+        dispatch(receiveTickets(tickets));
+      }
     }
   };
 }
@@ -163,6 +164,6 @@ function populateDomainFromAuth0Metadata() {
 export function prePopulateStore() {
   return (dispatch) => {
     dispatch(autoLoginIfPossible());
-    dispatch(populateDomainFromAuth0Metadata());
+    dispatch(populateFromAuth0Metadata());
   };
 }

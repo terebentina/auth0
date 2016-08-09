@@ -27,7 +27,6 @@ function mapStateToProps(state) {
   return {
     tickets: state.tickets,
     domain: state.domain,
-    lastSearchedDomains: _.get(state, 'profile.user_metadata.lastSearchedDomains', []),
   };
 }
 
