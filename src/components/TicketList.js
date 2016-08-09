@@ -11,8 +11,11 @@ function TicketList({ tickets, domain }) {
             <table className="table table-fixed">
               <thead>
                 <tr>
+                  <th>From</th>
+                  <th>To</th>
                   <th>Message</th>
                   <th>Status</th>
+                  <th>Updated</th>
                 </tr>
               </thead>
               <tbody>
