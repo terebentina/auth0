@@ -5,7 +5,7 @@ function TicketList({ tickets, domain }) {
   if (domain) {
     return (
       <div className="row">
-        <h3>List of tickets submitted by <code>*@{domain}</code>:</h3>
+        <h3>Tickets matching your search:</h3>
         {
           !!tickets.length &&
             <table className="table table-fixed">
