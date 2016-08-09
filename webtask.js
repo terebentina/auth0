@@ -5,10 +5,11 @@ const zd = require('node-zendesk');
 const domainRE = /^[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/;
 
 app.get('/', (req, res) => {
-  const domain = req.webtaskContext.data.domain;
   // @todo this is just some quick&dirty validation. We should do better in a real app
-  if (!domainRE.test(domain)) {
-    return res.status(400).json({ statusCode: 400, message: 'Invalid domain requested' });
+  const domains = req.webtaskContext.data.domain.trim().split(/\s+/);
+  const valid = domains.reduce((prevValid, domain) => prevValid && domainRE.test(domain), true);
+  if (!valid) {
+    return res.status(400).json({ statusCode: 400, message: 'Invalid domain(s) requested' });
   }
 
   const zdConfig = {
@@ -20,7 +21,9 @@ app.get('/', (req, res) => {
 
   const zdClient = zd.createClient(zdConfig);
 
-  const query = `type:ticket requester:*@${domain}`;
+  var query = domains.map((domain) => `requester:*@${domain}`).join(' ');
+  query = `type:ticket ${query}`;
+  console.log('query', query);
 
   zdClient.search.query(query, (err, code, result) => {
     if (err) {

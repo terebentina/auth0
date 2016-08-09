@@ -26,7 +26,9 @@ class DomainForm extends PureComponent {
   onFormSubmit = (e) => {
     e.preventDefault();
     const domain = this.state.domain.trim();
-    if (domainRE.test(domain)) {
+    const domains = domain.split(/\s+/);
+    const valid = domains.reduce((prevValid, dom) => prevValid && domainRE.test(dom.trim()), true);
+    if (valid) {
       this.props.fetchTickets(domain);
     } else {
       this.setState({ hasError: true });
