@@ -28,7 +28,7 @@ const defines = env.reduce(
 
 module.exports = {
   context: __dirname,
-  entry: path.resolve('./src/index.js'),
+  entry: ['babel-polyfill', path.resolve('./src/index.js')],
   output: {
     path: path.join(__dirname, 'build'),
     filename: '[name].js',
