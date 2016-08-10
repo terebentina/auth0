@@ -52,6 +52,7 @@ if (process.env.NODE_ENV == 'development') {
 
 if (process.env.NODE_ENV == 'production') {
   app.use(express.static('build'));
+  app.use('/tickets', express.static('build'));
 }
 
 app.listen(process.env.PORT || 3000, process.env.HOSTNAME || '0.0.0.0', () => {

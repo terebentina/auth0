@@ -4,14 +4,8 @@ import _ from 'lodash';
 export default {
   get(url, params, extra = {}) {
     const config = { params };
-    if (extra.forceJson) {
-      config.headers = {
-        Accept: 'application/json',
-      };
-      config.responseType = 'json';
-    }
     if (extra.headers) {
-      config.headers = Object.assign({}, config.headers, extra.headers);
+      config.headers = extra.headers;
     }
     return axios.get(url, config).then((response) => response.data);
   },
