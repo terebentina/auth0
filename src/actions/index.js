@@ -18,6 +18,10 @@ export function hideMessage() {
   return { type: Constants.HIDE_MESSAGE };
 }
 
+function loginLogic(profile, token) {
+  return (dispatch) => Promise.resolve().then(dispatch(loginSuccess(profile, token))).then(dispatch(populateFromAuth0Metadata()));
+}
+
 function loginSuccess(profile, token) {
   return {
     type: Constants.LOGIN_SUCCESS,
@@ -55,7 +59,7 @@ export function login() {
         if (error) {
           dispatch(loginError(error));
         }
-        dispatch(loginSuccess(profile, authResult.idToken));
+        dispatch(loginLogic(profile, authResult.idToken));
       });
     });
   };
@@ -135,12 +139,12 @@ function canAutoLogin() {
   return token && !isTokenExpired(token) && profile;
 }
 
-function autoLoginIfPossible() {
+export function autoLoginIfPossible() {
   return (dispatch) => {
     if (canAutoLogin()) {
       const token = localStorage.getItem('idToken');
       const profile = JSON.parse(localStorage.getItem('profile'));
-      return dispatch(loginSuccess(profile, token));
+      return dispatch(loginLogic(profile, token));
     }
   };
 }
@@ -158,12 +162,5 @@ function populateFromAuth0Metadata() {
         dispatch(receiveTickets(tickets));
       }
     }
-  };
-}
-
-export function prePopulateStore() {
-  return (dispatch) => {
-    dispatch(autoLoginIfPossible());
-    dispatch(populateFromAuth0Metadata());
   };
 }

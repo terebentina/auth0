@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import classNames from 'classnames';
-import { prePopulateStore } from './actions';
+import { autoLoginIfPossible } from './actions';
 import HeaderConnector from './components/HeaderConnector';
 import LoadingIndicator from './components/LoadingIndicator';
 import styles from './App.css';
@@ -10,7 +10,7 @@ import styles from './App.css';
 class App extends Component {
 
   componentWillMount() {
-    this.props.prePopulateStore();
+    this.props.autoLoginIfPossible();
   }
 
   render() {
@@ -29,7 +29,7 @@ class App extends Component {
 App.propTypes = {
   children: PropTypes.any,
   isFetching: PropTypes.bool,
-  prePopulateStore: PropTypes.func,
+  autoLoginIfPossible: PropTypes.func,
 };
 
 function mapStateToProps(state) {
@@ -37,7 +37,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ prePopulateStore }, dispatch);
+  return bindActionCreators({ autoLoginIfPossible }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
